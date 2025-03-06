@@ -22,17 +22,14 @@ public class TradeBookService {
         jdbcTemplate.update("ALTER TABLE trade_books AUTO_INCREMENT = 1");
         System.out.println("Deleted old records from trade_books.");
 
-
-
         String sql = """
-                        INSERT INTO trade_books (oid, tms_detail_id, clientMemberCode, symbol, securityName, tradeTime, 
-                         exchangeTradeId, exchangeOrderId, buyOrSell, tradePrice, tradedQuantity, 
-                         disclosedQuantity, displayName, created_at, updated_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-""";
+            INSERT INTO trade_books (oid, tms_detail_id, clientMemberCode, symbol, securityName, tradeTime, 
+            exchangeTradeId, exchangeOrderId, buyOrSell, tradePrice, tradedQuantity, 
+            disclosedQuantity, displayName, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
 
         List<Object[]> batchArgs = new ArrayList<>();
-
 
         for (int i = 1; i <= 1000; i++) {
             Timestamp createdAt = Timestamp.from(Instant.now());
@@ -41,15 +38,19 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             Timestamp updatedAt = Timestamp.from(Instant.now());
+
+            long tmsDetailId = 1111 + ((i -1 ) / 10);
+
+            String symbol = SymbolGenerator.getRandomSymbol();
+            String security = SecurityGenerator.getRandomSecurity();
 
             batchArgs.add(new Object[]{
                     UUID.randomUUID().toString(),
-                    "1111" + i,
+                    tmsDetailId,
                     "Client_" + i,
-                    "symbol_" + i,
-                    "Security " + i,
+                    symbol,
+                    security,
                     createdAt,
                     "ETID" + i,
                     "EOID" + i,
@@ -62,8 +63,12 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     updatedAt
             });
         }
-
-        jdbcTemplate.batchUpdate(sql, batchArgs);
-        System.out.println("Inserted 1000 records into trade_books.");
+            try {
+                jdbcTemplate.batchUpdate(sql, batchArgs);
+                System.out.println("Inserted 1000 records into trade_books with similar TMS IDs.");
+            }
+            catch (Exception e) {
+                System.out.println("Error occurred while inserting data: " + e.getMessage());
+        }
     }
 }
