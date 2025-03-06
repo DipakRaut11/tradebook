@@ -5,10 +5,10 @@ import java.util.Random;
 public class SecurityGenerator {
 
     private static final String[] SECURITIES = {
-           "tms01", "tms02", "tms03", "tms04", "tms05", "tms06", "tms07", "tms08", "tms09", "tms10"
+           "Kumari Securities Pvt. Ltd.", "Arun Securities Pvt. Ltd.", "Agrawal Securities Pvt. Ltd.", "Pragyan Securities Pvt. Ltd."
     };
 
-    private static final Random random = new Random();
+    private static final Random random = new Random();git
 
     public static String getRandomSecurity() {
         return SECURITIES[random.nextInt(SECURITIES.length)];
